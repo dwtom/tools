@@ -11,17 +11,17 @@ function photoCompress(event, config, allowSize, callback) {
     let file = event.target.files[0];
     // 判断图片格式
     if (file.type.slice(0, 6) !== 'image/') {
-        event.target.value = '';
-        callback({
+        return callback({
             success: false,
             msg: '请上传正确格式的图片',
             file: ''
         });
     }
     // 判断阈值
-    if (typeof allowSize !== 'number' || allowSize === NaN) {
-        event.target.value = '';
-        callback({
+    if (typeof allowSize !== 'number'
+        || allowSize === NaN
+        || allowSize <= 0) {
+        return callback({
             success: false,
             msg: '请传入正确的阈值',
             file: ''
@@ -45,14 +45,13 @@ function photoCompress(event, config, allowSize, callback) {
                 if (size < allowSize) {
                     // 将压缩后的base64转化为file对象
                     let compressFile = convertBase64UrlToFile(base64Url, file.name);
-                    callback({
+                    return callback({
                         success: true,
                         msg: '',
                         file: compressFile
                     });
                 } else { // 压缩后仍然超过阈值
-                    event.target.value = '';
-                    callback({
+                    return callback({
                         success: false,
                         msg: '图片过大，请重新选择图片上传',
                         file: ''
@@ -61,7 +60,7 @@ function photoCompress(event, config, allowSize, callback) {
             });
         }
     } else {
-        callback({
+        return callback({
             success: true,
             msg: '',
             file: file
