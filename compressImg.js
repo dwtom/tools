@@ -3,8 +3,8 @@
  * @param {Object}[event] 上传事件对象(input type=file获取的event)
  * @param {Object}[config] 压缩配置项 width,height,quality(默认可传空对象,quality值越小则压缩率越高)
  * @param {Number}[allowSize] 处理压缩的阈值(MB),图片大小小于阈值则不压缩
- * @param {Function}[callback] 回调函数传出值
- * @return: {Object} [obj] success-是否有返回值,msg-错误信息,file-文件对象
+ * @param {Function}[callback] 回调函数 传出对象 success-是否有返回值,msg-错误信息,file-文件对象
+ * @return: {void}
  */
 function photoCompress(event, config, allowSize, callback) {
     let ready = new FileReader();
@@ -37,7 +37,6 @@ function photoCompress(event, config, allowSize, callback) {
         ready.readAsDataURL(file);
         ready.onload = function () {
             let path = this.result;
-            // console.log(path);
             // 压缩后的base64
             canvasDataURL(path, config, base64Url => {
                 let ImgFileLength = base64Url.substring(base64Url.indexOf(',') + 1).length;// 压缩后的图片长度
@@ -46,7 +45,6 @@ function photoCompress(event, config, allowSize, callback) {
                 if (size < allowSize) {
                     // 将压缩后的base64转化为file对象
                     let compressFile = convertBase64UrlToFile(base64Url, file.name);
-                    // callback(compressFile);
                     callback({
                         success: true,
                         msg: '',
@@ -54,7 +52,6 @@ function photoCompress(event, config, allowSize, callback) {
                     });
                 } else { // 压缩后仍然超过阈值
                     event.target.value = '';
-                    // console.log('图片过大，请重新选择图片上传');
                     callback({
                         success: false,
                         msg: '图片过大，请重新选择图片上传',
@@ -76,8 +73,8 @@ function photoCompress(event, config, allowSize, callback) {
  * @description: canvas压缩主程序 (默认压缩率30%)
  * @param {String}[path] 读取的图片内容字符串
  * @param {Object}[config] 压缩配置项 width,height,quality(quality值越小则压缩率越高)
- * @param {Function}[callback] 回调函数传出值
- * @return: {Stirng} 图片base64值
+ * @param {Function}[callback] 回调函数传出图片base64值
+ * @return: {void} 
  */
 function canvasDataURL(path, config, callback) {
     let img = new Image();
