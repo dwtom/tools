@@ -1,53 +1,85 @@
 /**
- * @description: 压缩图片方法(最好在外层判断图片格式)
+ * @description: 压缩图片方法(将图片上传之后无论成功或失败都要将event.target.value置空)
  * @param {Object}[event] 上传事件对象(input type=file获取的event)
- * @param {Object}[config] 压缩配置项 width,height,quality(默认情况传空对象,quality值越小则压缩率越高)
- * @param {Number}[size] 处理压缩的阈值(MB)
- * @return: {void}
+ * @param {Object}[config] 压缩配置项 width,height,quality(默认可传空对象,quality值越小则压缩率越高)
+ * @param {Number}[allowSize] 处理压缩的阈值(MB),图片大小小于阈值则不压缩
+ * @param {Function}[callback] 回调函数传出值
+ * @return: {Object} [obj] success-是否有返回值,msg-错误信息,file-文件对象
  */
-function photoCompress(event, config) {
+function photoCompress(event, config, allowSize, callback) {
     let ready = new FileReader();
     let file = event.target.files[0];
-    // 在外层判断
-    // if (file.type.slice(0, 6) !== 'image/') {
-    //     event.target.value = '';
-    //     console.log('请上传正确格式的图片');
-    //     return;
-    // }
+    // 判断图片格式
+    if (file.type.slice(0, 6) !== 'image/') {
+        event.target.value = '';
+        callback({
+            success: false,
+            msg: '请上传正确格式的图片',
+            file: ''
+        });
+    }
+    // 判断阈值
+    if (typeof allowSize !== 'number' || allowSize === NaN) {
+        event.target.value = '';
+        callback({
+            success: false,
+            msg: '请传入正确的阈值',
+            file: ''
+        });
+    }
+    // 避免部分安卓手机点击上传但不传图片后取消会走下去
+    if (!file.size) {
+        return;
+    }
     // 大于指定大小才压缩,否则直接处理
-    if (file.size / 1024 > 1024 * 2) {
+    if (file.size / 1024 > 1024 * allowSize) {
         // 开始读取指定的Blob对象或File对象中的内容. 当读取操作完成时,readyState属性的值会成为DONE,如果设置了onloadend事件处理程序,则调用之.同时,result属性中将包含一个data: URL格式的字符串以表示所读取文件的内容.
         ready.readAsDataURL(file);
-        ready.onload = () => {
+        ready.onload = function () {
             let path = this.result;
+            // console.log(path);
             // 压缩后的base64
-            let base64Url = canvasDataURL(path, config);
-            let AllowImgFileSize = 2;
-            let ImgFileLength = base64Url.substring(base64Url.indexOf(',') + 1).length;// 压缩后的图片长度
-            let fileLength = parseInt(ImgFileLength - (ImgFileLength / 8) * 2, 0);
-            let size = (fileLength / (1024 * 1024)).toFixed(2);// 压缩后的图片大小mb
-            if (size < AllowImgFileSize) {
-                file = convertBase64UrlToFile(base64Url, img.name);
-                this.postUserIcon(file, e);
-            } else {
-                e.target.value = '';
-                this.$toast('图片过大，请重新选择图片上传');
-            }
-        };
+            canvasDataURL(path, config, base64Url => {
+                let ImgFileLength = base64Url.substring(base64Url.indexOf(',') + 1).length;// 压缩后的图片长度
+                let fileLength = parseInt(ImgFileLength - (ImgFileLength / 8) * 2, 0);
+                let size = (fileLength / (1024 * 1024)).toFixed(2);// 压缩后的图片大小mb
+                if (size < allowSize) {
+                    // 将压缩后的base64转化为file对象
+                    let compressFile = convertBase64UrlToFile(base64Url, file.name);
+                    // callback(compressFile);
+                    callback({
+                        success: true,
+                        msg: '',
+                        file: compressFile
+                    });
+                } else { // 压缩后仍然超过阈值
+                    event.target.value = '';
+                    // console.log('图片过大，请重新选择图片上传');
+                    callback({
+                        success: false,
+                        msg: '图片过大，请重新选择图片上传',
+                        file: ''
+                    });
+                }
+            });
+        }
     } else {
-        file = img;
-        this.postUserIcon(file, e);
+        callback({
+            success: true,
+            msg: '',
+            file: file
+        });
     }
-
 }
 
 /**
- * @description: canvas压缩主程序
+ * @description: canvas压缩主程序 (默认压缩率30%)
  * @param {String}[path] 读取的图片内容字符串
  * @param {Object}[config] 压缩配置项 width,height,quality(quality值越小则压缩率越高)
+ * @param {Function}[callback] 回调函数传出值
  * @return: {Stirng} 图片base64值
  */
-function canvasDataURL(path, config) {
+function canvasDataURL(path, config, callback) {
     let img = new Image();
     img.src = path;
     img.onload = function () {
@@ -75,7 +107,9 @@ function canvasDataURL(path, config) {
             quality = config.quality;
         }
         // quality值越小，所绘制出的图像越模糊
-        return canvas.toDataURL('image/jpeg', quality);
+        let res = canvas.toDataURL('image/jpeg', quality);
+        // 只能用回调函数传出,return无法接收
+        callback(res);
     };
 }
 
@@ -96,7 +130,3 @@ function convertBase64UrlToFile(urlData, fileName) {
     }
     return new File([u8arr], fileName, { type: mime });
 }
-export {
-    photoCompress,
-    convertBase64UrlToFile
-};
