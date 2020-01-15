@@ -72,3 +72,40 @@ const deepClone = (source, hash = new WeakMap()) => {
     });
     return target;
 }
+
+/**
+ * @description: 防抖
+ * @param {Function} [fn] 事件处理函数
+ * @param {Number} [wait] 响应时间
+ * @return: {Function}
+ */
+const debounce = (fn, wait) => {
+    let timeout = null;
+    return function () {
+        if (timeout !== null) {
+            clearTimeout(timeout);
+        }
+        timeout = setTimeout(fn, wait);
+    }
+}
+
+/**
+ * @description: 节流
+ * @param {Function} [fn] 事件处理函数
+ * @param {Number} [time] 响应时间间隔
+ * @return: {Function}
+ */
+const throttle = (fn, time) => {
+    let limited = false;
+    let start = Date.now();
+    time = time || 500;
+    return function (...args) {
+        let current = Date.now();
+        limited = limited && current - start < time;
+        if (!limited) {
+            fn.apply(this, args);
+            limited = true;
+            start = Date.now();
+        }
+    }
+}
