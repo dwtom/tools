@@ -4,7 +4,7 @@
  * @param {String} [end] 结束时间('2019-10')
  * @return: {Array} [result] 时间范围数组
  */
-function getYearAndMonth(start, end) {
+const getYearAndMonth = (start, end) => {
     let result = [];
     let starts = start.split('-');
     let ends = end.split('-');
@@ -48,7 +48,7 @@ function getYearAndMonth(start, end) {
  * @param {any} [obj]
  * @return: {Boolean}
  */
-function isObject(obj) {
+const isObject = (obj) => {
     return typeof obj === 'object' && obj !== null;
 }
 
@@ -58,7 +58,7 @@ function isObject(obj) {
  * @param {WeakMap} [hash]
  * @return: [target] 拷贝结果
  */
-function deepClone(source, hash = new WeakMap()) {
+const deepClone = (source, hash = new WeakMap()) => {
     if (!isObject(source)) return source;
     if (hash.has(source)) return hash.get(source);
     let target = Array.isArray(source) ? [] : {};

@@ -12,14 +12,15 @@
     <input type="file" id="file">
     <script src="./compressImg.js"></script>
     <script>
-        // 图片压缩处理上传
+        // 图片压缩处理上传test
+        const compressObj = new Compress();
         document.getElementById('file').onchange = (e) => {
-            photoCompress(e, {}, 1, data => {
-                console.log(data);
-                if (!data.success) {
+            compressObj.handleResult(e, {}, 1, res => {
+                console.log(res);
+                if (!res.success) {
                     e.target.value = '';
                 } else {
-                    // 获取data.file并执行图片上传等操作,无论成功或失败均要执行e.target.value = '';
+                    // res.file并执行图片上传等操作,无论成功或失败均要执行e.target.value = '';
                 }
             })
         }
