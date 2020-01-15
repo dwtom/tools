@@ -53,8 +53,21 @@ const isObject = (obj) => {
 }
 
 /**
+ * @description: 判断数据类型
+ * @param {any} [obj] 
+ * @return: {String}
+ */
+const getDataType = (obj) => {
+    const type = typeof obj;
+    if (type !== 'object') {
+        return type;
+    }
+    return Object.prototype.toString.call(obj).replace(/^\[object (\S+)\]$/, '$1');
+}
+
+/**
  * @description: 深拷贝
- * @param {any} [source]
+ * @param {any} [source] 原对象
  * @param {WeakMap} [hash]
  * @return: [target] 拷贝结果
  */
@@ -108,4 +121,26 @@ const throttle = (fn, time) => {
             start = Date.now();
         }
     }
+}
+
+/**
+ * @description: 多维数组扁平化
+ * @param {Array} [arr]
+ * @return: {Array} 扁平化之后的数组
+ */
+const streamRoller = (arr) => {
+    while (arr.some(val => Array.isArray(val))) {
+        arr = [].concat(...arr);
+    }
+    return arr;
+}
+
+/**
+ * @description: 数组去重
+ * @param {Array} [arr] 
+ * @return: {Array} 去重后的数组
+ */
+const getUniqueArr = (arr) => {
+    let tempArr = new Set(arr);
+    return [...tempArr];
 }
