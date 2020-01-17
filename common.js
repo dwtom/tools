@@ -105,19 +105,18 @@ const debounce = (fn, wait) => {
 /**
  * @description: 节流
  * @param {Function} [fn] 事件处理函数
- * @param {Number} [time] 响应时间间隔
+ * @param {Number} [time=500] 响应时间间隔,默认500毫秒
  * @return: {Function}
  */
-const throttle = (fn, time) => {
-    let limited = false;
+const throttle = (fn, time = 500) => {
+    let notFirst = false; // 是否不是第一次触发
     let start = Date.now();
-    time = time || 500;
     return function (...args) {
         let current = Date.now();
-        limited = limited && current - start < time;
+        let limited = notFirst && current - start < time; // 节流阀开关
         if (!limited) {
             fn.apply(this, args);
-            limited = true;
+            notFirst = true;
             start = Date.now();
         }
     }
