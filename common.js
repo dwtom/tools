@@ -127,7 +127,7 @@ const throttle = (fn, time = 500) => {
  * @param {Array} [arr]
  * @return: {Array} 扁平化之后的数组
  */
-const streamRoller = (arr) => {
+const flatArr = (arr) => {
     while (arr.some(val => Array.isArray(val))) {
         arr = [].concat(...arr);
     }
