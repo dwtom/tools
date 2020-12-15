@@ -66,27 +66,6 @@ const getDataType = (obj) => {
 }
 
 /**
- * @description: 深拷贝
- * @param {any} [source] 原对象
- * @param {WeakMap} [hash]
- * @return: [target] 拷贝结果
- */
-const deepClone = (source, hash = new WeakMap()) => {
-    if (!isObject(source)) return source;
-    if (hash.has(source)) return hash.get(source);
-    let target = Array.isArray(source) ? [] : {};
-    hash.set(source, target);
-    Reflect.ownKeys(source).forEach(key => {
-        if (isObject(source[key])) {
-            target[key] = deepClone(source[key], hash);
-        } else {
-            target[key] = source[key];
-        }
-    });
-    return target;
-}
-
-/**
  * @description: 防抖
  * @param {Function} [fn] 事件处理函数
  * @param {Number} [wait] 响应时间
@@ -142,4 +121,56 @@ const flatArr = (arr) => {
 const getUniqueArr = (arr) => {
     let tempArr = new Set(arr);
     return [...tempArr];
+}
+
+/**
+ * @description: 树结构扁平化
+ * @param {Array} arr 树结构数组
+ * @param {String} children children字段名 默认为children
+ * @return {Array}
+ */
+const getFlatTree = (arr, children = 'children') => {
+  let res = [];
+  arr.forEach(v => {
+      res.push(v);
+      if (v[children] && Array.isArray(v[children])) {
+          const childArr = getFlatTree(v[children], children);
+          res.push(...childArr);
+      }
+  })
+  return res;
+}
+
+// 全屏 dom为需要全屏的元素
+const fullScreen = (dom) => {
+  if (dom.requestFullscreen) {
+      return dom.requestFullscreen();
+  } else if (dom.webkitRequestFullScreen) {
+      return dom.webkitRequestFullScreen();
+  } else if (dom.mozRequestFullScreen) {
+      return dom.mozRequestFullScreen();
+  } else {
+      return dom.msRequestFullscreen();
+  }
+};
+
+// 退出全屏
+const exitFullScreen = () => {
+  if (document.exitFullscreen) {
+      document.exitFullscreen();
+  } else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen();
+  } else if (document.webkitCancelFullScreen) {
+      document.webkitCancelFullScreen();
+  }
+}
+
+// 判断是否全屏
+const isFullScreen = () => {
+  return !!(
+      document.fullScreenElement || 
+    document.mozFullScreenElement ||                         
+    document.webkitFullscreenElement ||       
+    document.msFullscreenElement
+  );
 }
