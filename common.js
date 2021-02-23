@@ -66,64 +66,6 @@ const getDataType = (obj) => {
 }
 
 /**
- * @description: 防抖
- * @param {Function} [fn] 事件处理函数
- * @param {Number} [wait] 响应时间
- * @return: {Function}
- */
-const debounce = (fn, wait) => {
-    let timeout = null;
-    return function () {
-        if (timeout !== null) {
-            clearTimeout(timeout);
-        }
-        timeout = setTimeout(fn, wait);
-    }
-}
-
-/**
- * @description: 节流
- * @param {Function} [fn] 事件处理函数
- * @param {Number} [time=500] 响应时间间隔,默认500毫秒
- * @return: {Function}
- */
-const throttle = (fn, time = 500) => {
-    let notFirst = false; // 是否不是第一次触发
-    let start = Date.now();
-    return function (...args) {
-        let current = Date.now();
-        let limited = notFirst && current - start < time; // 节流阀开关
-        if (!limited) {
-            fn.apply(this, args);
-            notFirst = true;
-            start = Date.now();
-        }
-    }
-}
-
-/**
- * @description: 多维数组扁平化
- * @param {Array} [arr]
- * @return: {Array} 扁平化之后的数组
- */
-const flatArr = (arr) => {
-    while (arr.some(val => Array.isArray(val))) {
-        arr = [].concat(...arr);
-    }
-    return arr;
-}
-
-/**
- * @description: 数组去重
- * @param {Array} [arr] 
- * @return: {Array} 去重后的数组
- */
-const getUniqueArr = (arr) => {
-    let tempArr = new Set(arr);
-    return [...tempArr];
-}
-
-/**
  * @description: 树结构扁平化
  * @param {Array} arr 树结构数组
  * @param {String} children children字段名 默认为children
@@ -206,3 +148,72 @@ export const getThousandsNum = (num, fixed=0) => {
     return [num[0].replace(/\d{1,3}(?=(\d{3})+$)/g, '$&,')].join('');
   }
 };
+
+// 生成Guid
+const setGuid = () => {
+	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+	    var r = Math.random() * 16 | 0,
+	        v = c == 'x' ? r : (r & 0x3 | 0x8);
+	    return v.toString(16);
+	});
+};
+
+
+// 以下方法lodash中已经含有
+/**
+ * @description: 防抖(仅作参考学习)
+ * @param {Function} [fn] 事件处理函数
+ * @param {Number} [wait] 响应时间
+ * @return: {Function}
+ */
+const debounce = (fn, wait) => {
+    let timeout = null;
+    return function () {
+        if (timeout !== null) {
+            clearTimeout(timeout);
+        }
+        timeout = setTimeout(fn, wait);
+    }
+}
+
+/**
+ * @description: 节流(仅作参考学习)
+ * @param {Function} [fn] 事件处理函数
+ * @param {Number} [time=500] 响应时间间隔,默认500毫秒
+ * @return: {Function}
+ */
+const throttle = (fn, time = 500) => {
+    let notFirst = false; // 是否不是第一次触发
+    let start = Date.now();
+    return function (...args) {
+        let current = Date.now();
+        let limited = notFirst && current - start < time; // 节流阀开关
+        if (!limited) {
+            fn.apply(this, args);
+            notFirst = true;
+            start = Date.now();
+        }
+    }
+}
+
+/**
+ * @description: 多维数组扁平化(仅作参考学习)
+ * @param {Array} [arr]
+ * @return: {Array} 扁平化之后的数组
+ */
+const flatArr = (arr) => {
+    while (arr.some(val => Array.isArray(val))) {
+        arr = [].concat(...arr);
+    }
+    return arr;
+}
+
+/**
+ * @description: 数组去重(仅作参考学习)
+ * @param {Array} [arr] 
+ * @return: {Array} 去重后的数组
+ */
+const getUniqueArr = (arr) => {
+    let tempArr = new Set(arr);
+    return [...tempArr];
+}
