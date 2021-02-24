@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CH">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		#ballContainer{
+			border: 1px solid #000;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="ballContainer"></canvas>
+	<script>
+		const ballList = [
+			{
+				name: 'b1',
+				value: 10
+			}
+		];
+    for (let i = 2; i < 50; i++) {
+      ballList.push({
+        name: `b${2}`,
+        value: getRandomNum(10, 30)
+      })
+    }
+		const boxDOM = document.getElementById('ballContainer');
+    boxDOM.width = 1000;
+    boxDOM.height = 500;
+		const boxWidth = boxDOM.offsetWidth;
+    const boxHeight = boxDOM.offsetHeight;
+    const ctx = boxDOM.getContext('2d');
+
+    class Ball{
+			constructor(r) {
+        this.radius = r || 10; // 半径
+				this.position = [this.radius, this.radius]; // 圆心
+				this.velocity = [0, 0]; // 速度
+        this.acceleration = [0, 0.02]; // 加速度
+        this.guid = setGuid();
+			}
+			setPosition(x, y) {
+				this.position = [x, y];
+			}
+			setVelocity(x, y) {
+				this.velocity = [x, y];
+			}
+      setAcceleration(x, y) {
+        this.acceleration = [x, y];
+      }
+      // 设置初始属性
+      setBallOriginalAttr() {
+        const startPX = getRandomNum(4 * this.radius, boxWidth - 4 * this.radius); // 使初始坐标远离边界
+        const startPY = getRandomNum(4 * this.radius, boxHeight - 4 * this.radius);
+        this.setPosition(startPX, startPY);
+        const startVX = getRandomNum(-2, 2);
+        const startVY = 0;
+        this.setVelocity(startVX, startVY);
+      }
+		}
+    // 小球初始化
+    initBall();
+    // 开始运动
+    moveBall();
+
+		// 初始化
+    function initBall() {
+      outter:
+      for (let i = 0; i < ballList.length;) {
+        const ball = new Ball();
+        ball.setBallOriginalAttr();
+        for (const item of ballList) {
+          if(item.ballObj) {
+            const flag = checkEachBallCollision(ball, item.ballObj);
+            if(flag) {
+              continue outter;
+            }
+          }
+        }
+        Object.assign(ballList[i], {ballObj: ball});
+        drawBall(ball);
+        i++;
+      }
+    }
+    // 小球运动
+    function moveBall() {
+      let timer = setInterval(function() {
+        for (let i = 0; i< ballList.length; i++) {
+          const ball = ballList[i].ballObj; // 当前小球
+          ball.setVelocity(ball.velocity[0] + ball.acceleration[0], ball.velocity[1] + ball.acceleration[1]);
+          ball.setPosition(ball.position[0] + ball.velocity[0], ball.position[1] + ball.velocity[1]);
+          // 边界检测
+          const result = checkBoundCollision(ball);
+          if(result) {
+            ball.setPosition(result.x, result.y);
+            ball.setVelocity(result.vx, result.vy);
+          } else {
+            // 碰撞检测
+            for (let j = i + 1; j < ballList.length; j++) {
+              const balli = ballList[j].ballObj;
+              const flag = checkEachBallCollision(ball, balli);
+              if(flag) {
+                setBallVelocityAfterCollision(ball, balli);
+              }
+            }
+          }
+        }
+        // 开始绘制
+        ctx.clearRect(0, 0, boxWidth, boxHeight);
+        for (const item of ballList) {
+          const ball = item.ballObj;
+          drawBall(ball);
+        }
+      }, 16);
+    }
+    // 边界碰撞检测
+    function checkBoundCollision(ball) {
+      const r = ball.radius;
+      let x = ball.position[0];
+      let y = ball.position[1];
+      let vx = ball.velocity[0];
+      let vy = ball.velocity[1];
+      const res = {x, y, vx, vy};
+      // x边界
+      if(x - r <= 0){
+        // x = 2 * r - x; // 模拟出反弹的效果
+        // vx = -vx;
+        Object.assign(res, {x: 2 * r - x, vx: -vx});
+        return res;
+      } else if (x + r >= boxWidth) {
+        Object.assign(res, {x: 2 * (boxWidth - r) - x, vx: -vx});
+        return res;
+      }
+      // y边界
+      if(y - r <= 0) {
+        Object.assign(res, {y: 2 * r - y, vy: -vy});
+        return res;
+      } else if (y + r >= boxHeight) {
+        Object.assign(res, {y: 2 * (boxHeight - r) - y, vy: -vy});
+        return res;
+      }
+      return null;
+    }
+
+    /**
+     * @description: 小球间碰撞检测并重新设置状态
+     * @param {Object} b1 当前小球
+     * @param {Object} b2 其它小球
+     * @return {*}
+     */
+    function checkEachBallCollision(b1, b2) {
+      const x1 = b1.position[0];
+      const y1 = b1.position[1];
+      const x2 = b2.position[0];
+      const y2 = b2.position[1];
+      const r1 = b1.radius;
+      const r2 = b2.radius;
+      // 直角三角形三边关系
+      const distance = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+      if(distance >= r1 + r2){
+        return false;
+      }
+      // 小球下一状态的碰撞检测(避免一些bug)
+      const nextX1 = x1 + b1.velocity[0];
+      const nextY1 = y1 + b1.velocity[1];
+      const nextX2 = x2 + b2.velocity[0];
+      const nextY2 = y2 + b2.velocity[1];
+      const nextDistance = Math.sqrt(Math.pow(nextX1 - nextX2, 2) + Math.pow(nextY1 - nextY2, 2));
+      if(nextDistance > distance) {
+        return false;
+      }
+      return true;
+    }
+    // 使用向量计算小球碰撞后的速度
+    function setBallVelocityAfterCollision(b1, b2) {
+      const x1 = b1.position[0];
+      const y1 = b1.position[1];
+      const x2 = b2.position[0];
+      const y2 = b2.position[1];
+      const r1 = b1.radius;
+      const r2 = b2.radius;
+      const distance = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+      const newX = (x1 - x2) / distance;
+      const newY = (y1 - y2) / distance;
+
+      const aci = b1.velocity[0] * newX + b1.velocity[1] * newY;
+      const bci = b2.velocity[0] * newX + b2.velocity[1] * newY;
+
+      const acf = bci;
+      const bcf = aci;
+
+      b1.velocity[0] += (acf - aci) * newX;
+      b1.velocity[1] += (acf - aci) * newY;
+
+      b2.velocity[0] += (bcf - bci) * newX;
+      b2.velocity[1] += (bcf - bci) * newY;
+    }
+		// 绘制小球
+    function drawBall(ball) {
+      ctx.beginPath();
+      ctx.arc(ball.position[0], ball.position[1], ball.radius, 0, 2 * Math.PI);
+      ctx.stroke();
+    }
+    // 生成m,n闭区间的随机整数
+		function getRandomNum(m, n) {
+			return Math.floor(Math.random() * (n - m + 1) + m);
+		}
+    // 生成guid
+    function setGuid() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        const r = Math.random() * 16 | 0,
+            v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
+	</script>
+</body>
+</html>
