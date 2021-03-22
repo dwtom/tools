@@ -158,6 +158,46 @@ const setGuid = () => {
 	});
 };
 
+// 检测屏幕缩放比例
+export const detectZoom = ()=> {
+  let ratio = 0;
+  const screen = window.screen;
+  const ua = navigator.userAgent.toLowerCase();
+  if (window.devicePixelRatio !== undefined) {
+      ratio = window.devicePixelRatio;
+  } else if (~ua.indexOf('msie')) {
+      if (screen.deviceXDPI && screen.logicalXDPI) {
+          ratio = screen.deviceXDPI / screen.logicalXDPI;
+      }
+  } else if (window.outerWidth !== undefined && window.innerWidth !== undefined) {
+      ratio = window.outerWidth / window.innerWidth;
+  }
+  return ratio;
+}
+
+/**
+ * @description: 已知起点和终点近似计算三次贝塞尔曲线控制点
+ * @param {Array<number>} start 起点坐标
+ * @param {Array<number>} end 终点坐标
+ * @param {Number} curvature 曲率(默认0.1)
+ * @return {Object}
+ */
+ export const calcCubicBezierCurveControlPoint = (start, end, curvature = 0.1)=> {
+  const x1 = start[0];
+  const y1 = start[1];
+  const x2 = end[0];
+  const y2 = end[1];
+  const cx1 = x1 + (x2 - x1) / 3 + (y2 - y1) * curvature;
+  const cy1 = y1 + (y2 - y1) / 3 + (x1 - x2) * curvature;
+  const cx2 = x1 + (x2 - x1) * 2 / 3 + (y1 - y2) * curvature;
+  const cy2 = y1 + (y2 - y1) * 2 / 3 + (x2 - x1) * curvature;
+  return {
+      c1: [Math.abs(cx1), Math.abs(cy1)],
+      c2: [Math.abs(cx2), Math.abs(cy2)]
+  };
+}
+
+
 
 // 以下方法lodash中已经含有
 /**
