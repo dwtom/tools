@@ -4,7 +4,7 @@
  * @param {String} [end] 结束时间('2019-10')
  * @return: {Array} [result] 时间范围数组
  */
-const getYearAndMonth = (start, end) => {
+export const getYearAndMonth = (start, end) => {
     let result = [];
     let starts = start.split('-');
     let ends = end.split('-');
@@ -48,7 +48,7 @@ const getYearAndMonth = (start, end) => {
  * @param {any} [obj]
  * @return: {Boolean}
  */
-const isObject = (obj) => {
+export const isObject = (obj) => {
     return typeof obj === 'object' && obj !== null;
 }
 
@@ -71,8 +71,8 @@ const getDataType = (obj) => {
  * @param {String} children children字段名 默认为children
  * @return {Array}
  */
-const getFlatTree = (arr, children = 'children') => {
-  let res = [];
+export const getFlatTree = (arr, children = 'children') => {
+  const res = [];
   arr.forEach(v => {
       res.push(v);
       if (v[children] && Array.isArray(v[children])) {
@@ -84,7 +84,7 @@ const getFlatTree = (arr, children = 'children') => {
 }
 
 // 全屏 dom为需要全屏的元素
-const fullScreen = (dom) => {
+export const fullScreen = (dom) => {
   if (dom.requestFullscreen) {
       return dom.requestFullscreen();
   } else if (dom.webkitRequestFullScreen) {
@@ -97,7 +97,7 @@ const fullScreen = (dom) => {
 };
 
 // 退出全屏
-const exitFullScreen = () => {
+export const exitFullScreen = () => {
   if (document.exitFullscreen) {
       document.exitFullscreen();
   } else if (document.mozCancelFullScreen) {
@@ -108,7 +108,7 @@ const exitFullScreen = () => {
 }
 
 // 判断是否全屏
-const isFullScreen = () => {
+export const isFullScreen = () => {
   return !!(
       document.fullScreenElement || 
     document.mozFullScreenElement ||                         
@@ -123,7 +123,7 @@ const isFullScreen = () => {
  * @param {Number} length 需要截取（保留）的长度
  * @return {String}
  */
-const getStringSlice = (str, length) => {
+export const getStringSlice = (str, length) => {
   const retainStr = str.slice(0, length);
   if (str.length === retainStr.length) {
     return str;
@@ -150,7 +150,7 @@ export const getThousandsNum = (num, fixed=0) => {
 };
 
 // 生成Guid
-const setGuid = () => {
+export const setGuid = () => {
 	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
 	    const r = Math.random() * 16 | 0,
 	        v = c == 'x' ? r : (r & 0x3 | 0x8);
