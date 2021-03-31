@@ -183,10 +183,8 @@ export const detectZoom = ()=> {
  * @return {Object}
  */
  export const calcCubicBezierCurveControlPoint = (start, end, curvature = 0.1)=> {
-  const x1 = start[0];
-  const y1 = start[1];
-  const x2 = end[0];
-  const y2 = end[1];
+  const [x1, y1] = start;
+  const [x2, y2] = end;
   const cx1 = x1 + (x2 - x1) / 3 + (y2 - y1) * curvature;
   const cy1 = y1 + (y2 - y1) / 3 + (x1 - x2) * curvature;
   const cx2 = x1 + (x2 - x1) * 2 / 3 + (y1 - y2) * curvature;
