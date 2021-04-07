@@ -57,7 +57,7 @@ export const isObject = (obj) => {
  * @param {any} [obj] 
  * @return: {String}
  */
-const getDataType = (obj) => {
+ export const getDataType = (obj) => {
     const type = typeof obj;
     if (type !== 'object') {
         return type;
