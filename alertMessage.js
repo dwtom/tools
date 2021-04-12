@@ -3,14 +3,14 @@
  * @Author: Dong Wei
  * @Date: 2020-11-23 16:35:23
  * @LastEditors: Dong Wei
- * @LastEditTime: 2021-04-07 10:27:06
+ * @LastEditTime: 2021-04-12 10:41:22
  * @FilePath: \tools\singleMessage.js
  */
 import { Message } from 'view-design';
 
 const showMessage = Symbol('showMessage');
 
-export const singleMessage = {
+export const alertMessage = {
     success(options, single = true) {
         this[showMessage]('success', options, single);
     },
