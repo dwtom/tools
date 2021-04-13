@@ -83,6 +83,34 @@ export const getFlatTree = (arr, children = 'children') => {
   return res;
 }
 
+/**
+ * @description: 扁平数组组装成树结构
+ * @param {array} arr 扁平数组
+ * @param {object} parentNode 父节点/根节点
+ * @param {string} parentIdKey 父节点id键名
+ * @param {string} currentIdKey 当前节点id键名
+ * @param {string} childrenKey 子节点id键名
+ * @return {array}
+ */
+export const setTreeNodes = (arr, parentNode, parentIdKey, currentIdKey, childrenKey) => {
+  const tree = [];
+  for (const item of arr) {
+      let tempNode = null;
+      if (item[parentIdKey] === parentNode[currentIdKey]) {
+          tempNode = setTreeNodes(arr, item, parentIdKey, currentIdKey, childrenKey);
+          if (tempNode.length) {
+              item[childrenKey] = tempNode;
+          }
+          tree.push(item);
+      }
+  }
+  // 不包括根节点
+  return tree;
+  // 完整树结构
+  // parentNode[childrenKey] = tree;
+  // return parentNode;
+};
+
 // 全屏 dom为需要全屏的元素
 export const fullScreen = (dom) => {
   if (dom.requestFullscreen) {
