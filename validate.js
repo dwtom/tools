@@ -23,3 +23,38 @@ const regList = {
     validateInputLenght: /^(?=([0-9]{0,6}$|[0-9]{0,3}\.))(0|[1-9][0-9]*)(\.[0-9]{1,2})?$/, // 校验输入长度判断最大6位，小数最多两位
     validateAddress: /^[A-Za-z\d_\-\u4e00-\u9fa5]{1,25}$/ // 校验收货地址（1-25个任意大小写字母数字横杠下划线加中文）
 };
+
+// 身份证校验
+export function testIdCard(id) {
+  // 1 "验证通过!", 0 //校验不通过
+  const format = /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/;
+
+  // 号码规则校验
+  if (!format.test(id)) {
+    return '请输入正确的身份证号';
+  }
+
+  if (id && id.length === 18) {
+    // 出生年月日校验
+    const year = id.substr(6, 4); // 身份证年
+    const month = id.substr(10, 2); // 身份证月
+    const date = id.substr(12, 2); // 身份证日
+    const time = Date.parse(`${month}-${date}-${year}`); // 身份证日期时间戳date
+    const nowTime = Date.parse(new Date()); // 当前时间戳
+    const dates = new Date(year, month, 0).getDate(); // 身份证当月天数
+    if (time > nowTime || date > dates) {
+      return '出生日期错误';
+    }
+    // 校验码判断
+    const c = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2]; // 系数
+    const b = ['1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2']; // 校验码对照表
+    const idArray = id.split('');
+    let sum = 0;
+    for (let k = 0; k < 17; k += 1) {
+      sum += parseInt(idArray[k], 0) * parseInt(c[k], 0);
+    }
+    if (idArray[17].toUpperCase() !== b[sum % 11].toUpperCase()) {
+      return '身份证校验码错误';
+    }
+  }
+}

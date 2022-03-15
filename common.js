@@ -223,6 +223,11 @@ export const detectZoom = ()=> {
   };
 }
 
+// 生成给定区间的随机数
+export const getRandom = (min, max)=>{
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
 
 
 // 以下方法lodash中已经含有
