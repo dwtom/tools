@@ -43,6 +43,11 @@ export const getYearAndMonth = (start, end) => {
     return result;
 }
 
+// 计算两个日期间的天数
+export const calcDaysDiff = (date, date2) => {
+  return Math.ceil(Math.abs(date - date2) / 86400000);
+}
+
 /**
  * @description: 判断是否为对象
  * @param {any} [obj]
@@ -224,11 +229,17 @@ export const detectZoom = ()=> {
 }
 
 // 生成给定区间的随机数
-export const getRandom = (min, max)=>{
+export const getRandomNumber = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
+// 生成随机布尔值
+export const getRandomBoolean = () => Math.random() >= 0.5;
 
+// 将文字复制到剪贴板
+export const copyTextToClipboard = async (text) => {
+  await navigator.clipboard.writeText(text);
+}
 
 // 以下方法lodash中已经含有
 /**
