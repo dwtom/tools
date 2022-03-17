@@ -3,10 +3,13 @@
  * @Author: Dong Wei
  * @Date: 2020-11-23 16:35:23
  * @LastEditors: Dong Wei
- * @LastEditTime: 2021-04-12 10:41:22
- * @FilePath: \tools\singleMessage.js
+ * @LastEditTime: 2022-03-17 14:07:06
+ * @FilePath: \tools\utils\uniqueMessage.js
  */
 import { Message } from 'view-design';
+// element的版本
+// import { Message } from 'element-ui';
+// className el-message
 
 const showMessage = Symbol('showMessage');
 
