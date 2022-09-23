@@ -3,21 +3,23 @@
  * @Author: Dong Wei
  * @Date: 2022-03-17 13:58:57
  * @LastEditors: Dong Wei
- * @LastEditTime: 2022-03-17 14:00:03
- * @FilePath: \tools\dealData.js
+ * @LastEditTime: 2022-09-23 16:29:41
+ * @FilePath: \tools\utils\dealData.js
  */
 // 判断是否为对象
-export const isObject = obj => {
+export const isObject = (obj) => {
   return typeof obj === 'object' && obj !== null;
-}
+};
 // 判断数据类型
-export const getDataType = obj => {
+export const getDataType = (obj) => {
   const type = typeof obj;
   if (type !== 'object') {
     return type;
   }
-  return Object.prototype.toString.call(obj).replace(/^\[object (\S+)\]$/, '$1');
-}
+  return Object.prototype.toString
+    .call(obj)
+    .replace(/^\[object (\S+)\]$/, '$1');
+};
 
 /**
  * @description: 字符串过长显示...
@@ -35,11 +37,11 @@ export const getStringSlice = (str, length) => {
 };
 
 /**
-* @description: 数字添加千分符
-* @param {Number|String} num
-* @param {Number} [fixed=0] 需要保留的小数位数,默认保留整数
-* @return {String}
-*/
+ * @description: 数字添加千分符
+ * @param {Number|String} num
+ * @param {Number} [fixed=0] 需要保留的小数位数,默认保留整数
+ * @return {String}
+ */
 export const getThousandsNum = (num, fixed = 0) => {
   if (typeof num !== 'number') num = Number(num);
   if (isNaN(num)) return '';
@@ -59,15 +61,15 @@ export const getThousandsNum = (num, fixed = 0) => {
  */
 export const getFlatTree = (arr, children = 'children') => {
   const res = [];
-  arr.forEach(v => {
+  arr.forEach((v) => {
     res.push(v);
     if (v[children] && Array.isArray(v[children])) {
       const childArr = getFlatTree(v[children], children);
       res.push(...childArr);
     }
-  })
+  });
   return res;
-}
+};
 
 /**
  * @description: 扁平数组组装成树结构
@@ -78,12 +80,24 @@ export const getFlatTree = (arr, children = 'children') => {
  * @param {string} childrenKey 子节点id键名
  * @return {array}
  */
-export const setTreeNodes = (arr, parentNode, parentIdKey, currentIdKey, childrenKey) => {
+export const setTreeNodes = (
+  arr,
+  parentNode,
+  parentIdKey,
+  currentIdKey,
+  childrenKey
+) => {
   const tree = [];
   for (const item of arr) {
     let tempNode = null;
     if (item[parentIdKey] === parentNode[currentIdKey]) {
-      tempNode = setTreeNodes(arr, item, parentIdKey, currentIdKey, childrenKey);
+      tempNode = setTreeNodes(
+        arr,
+        item,
+        parentIdKey,
+        currentIdKey,
+        childrenKey
+      );
       if (tempNode.length) {
         item[childrenKey] = tempNode;
       }
@@ -95,4 +109,11 @@ export const setTreeNodes = (arr, parentNode, parentIdKey, currentIdKey, childre
   // 完整树结构
   // parentNode[childrenKey] = tree;
   // return parentNode;
+};
+
+// 字符串数组按照拼音首字母排序
+export const arraySortByPinYin = (arr) => {
+  return arr.sort(function (param1, param2) {
+    return param1.localeCompare(param2, 'zh');
+  });
 };
