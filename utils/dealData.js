@@ -3,7 +3,7 @@
  * @Author: Dong Wei
  * @Date: 2022-03-17 13:58:57
  * @LastEditors: Dong Wei
- * @LastEditTime: 2022-09-23 16:29:41
+ * @LastEditTime: 2022-11-15 10:42:40
  * @FilePath: \tools\utils\dealData.js
  */
 // 判断是否为对象
@@ -60,6 +60,9 @@ export const getThousandsNum = (num, fixed = 0) => {
  * @return {Array}
  */
 export const getFlatTree = (arr, children = 'children') => {
+  if (!Array.isArray(arr)) {
+    return arr;
+  }
   const res = [];
   arr.forEach((v) => {
     res.push(v);
