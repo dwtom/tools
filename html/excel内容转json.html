@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>根据excel生成json</title>
+  </head>
+  <body>
+    <p>说明：</p>
+    <ol>
+      <li>在excel中复制标题列和内容列</li>
+      <li>
+        去<a href="http://www.esjson.com/exceltojson.html" target="_blank"
+          >http://www.esjson.com/exceltojson.html</a
+        >按行转成数组
+      </li>
+      <li>
+        找到结果的第一个数组项，删除里面的标题列的内容，复制最终的二维数组并粘贴到下面的框
+      </li>
+      <li>输入val的英文名，点击生成json</li>
+    </ol>
+
+    <br />
+    <br />
+    <textarea
+      style="width: 400px; height: 200px"
+      id="textarea"
+      placeholder="粘贴数组的值"
+    ></textarea>
+    <br />
+    <br />
+    <input
+      type="text"
+      id="input"
+      style="width: 400px"
+      placeholder="最终val值的前半段名称 比如xx-0,xx是名字,可以先不填"
+    />
+    <br />
+    <br />
+    <button id="btn">生成json</button>
+    <button style="background: rgb(25, 137, 250); color: #fff" id="copybtn">
+      复制结果
+    </button>
+    <br />
+    <textarea
+      style="width: 100%; height: 200px"
+      id="con"
+      placeholder="最终结果"
+    ></textarea>
+    <script>
+      const btn = document.getElementById('btn');
+      const textarea = document.getElementById('textarea');
+      const con = document.getElementById('con');
+      const input = document.getElementById('input');
+      btn.onclick = function () {
+        const oriarr = eval(textarea.value);
+        const inputVal = input.value;
+        const res = oriarr.map((val, ind) => {
+          return {
+            // remark: val[0].join('，'),
+            remark: val[0],
+            val: `${inputVal}-${ind}`,
+          };
+        });
+        // con.innerHTML = JSON.stringify(res);
+        con.value = JSON.stringify(res);
+      };
+      const copybtn = document.getElementById('copybtn');
+      copybtn.onclick = function () {
+        copyTextToClipboard(con.value);
+        alert('结果已复制到系统剪贴板，使用Ctrl+v进行粘贴');
+      };
+
+      // 复制相关方法
+      function fallbackCopyTextToClipboard() {
+        // 1.创建一个可选中元素
+        let textArea = document.createElement('textarea');
+        textArea.value = window.location.href;
+        // 2.使用定位，阻止页面滚动
+        textArea.style.top = '0';
+        textArea.style.left = '0';
+        textArea.style.position = 'fixed';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+          var successful = document.execCommand('copy');
+          var msg = successful ? 'successful' : 'unsuccessful';
+          console.log('Fallback: Copying text command was ' + msg);
+        } catch (err) {
+          console.error('Fallback: Oops, unable to copy', err);
+        }
+        // 3.移除元素
+        document.body.removeChild(textArea);
+      }
+
+      function copyTextToClipboard(text) {
+        if (!navigator.clipboard) {
+          fallbackCopyTextToClipboard(text);
+          return;
+        }
+        navigator.clipboard.writeText(text).then(
+          function () {
+            console.log('Async: Copying to clipboard was successful!');
+          },
+          function (err) {
+            console.error('Async: Could not copy text: ', err);
+          }
+        );
+      }
+    </script>
+  </body>
+</html>
