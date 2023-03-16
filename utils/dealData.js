@@ -3,7 +3,7 @@
  * @Author: Dong Wei
  * @Date: 2022-03-17 13:58:57
  * @LastEditors: Dong Wei
- * @LastEditTime: 2023-03-16 09:02:24
+ * @LastEditTime: 2023-03-16 09:41:21
  * @FilePath: \tools\utils\dealData.js
  */
 // 判断是否为对象
@@ -116,9 +116,8 @@ export const setTreeNodes = (
 
 /**
  * @description: 树结构从子级往父级遍历(会改变原始数组)
- * @param {array} arr
- * @param {string} childName
- * @param {function} fn
+ * @param {object} [object.arr] 树结构的数组 [object.childName] 子级的属性名
+ * @param {function} fn 回调函数,处理当前节点的内容,并返回入参(当前节点) (arg: T) => T
  * @return {array}
  */
 export const loopTreeFromChild = ({ arr, childName }, fn) => {
