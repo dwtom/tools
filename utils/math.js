@@ -3,8 +3,8 @@
  * @Author: Dong Wei
  * @Date: 2022-03-17 13:56:37
  * @LastEditors: Dong Wei
- * @LastEditTime: 2022-03-17 13:56:38
- * @FilePath: \tools\math.js
+ * @LastEditTime: 2023-04-07 16:33:59
+ * @FilePath: \tools\utils\math.js
  */
 // 生成Guid
 export const setGuid = () => {

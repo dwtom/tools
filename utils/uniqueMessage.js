@@ -3,39 +3,39 @@
  * @Author: Dong Wei
  * @Date: 2020-11-23 16:35:23
  * @LastEditors: Dong Wei
- * @LastEditTime: 2022-11-14 10:04:47
+ * @LastEditTime: 2023-04-07 16:35:37
  * @FilePath: \tools\utils\uniqueMessage.js
  */
 // element的版本
-import { Message } from 'element-ui';
+import { Message } from "element-ui";
 
-const showMessage = Symbol('showMessage');
+const showMessage = Symbol("showMessage");
 
 export const alertMessage = {
-    success(options, single = true) {
-        this[showMessage]('success', options, single);
-    },
+  success(options, single = true) {
+    this[showMessage]("success", options, single);
+  },
 
-    warning(options, single = true) {
-        this[showMessage]('warning', options, single);
-    },
+  warning(options, single = true) {
+    this[showMessage]("warning", options, single);
+  },
 
-    info(options, single = true) {
-        this[showMessage]('info', options, single);
-    },
+  info(options, single = true) {
+    this[showMessage]("info", options, single);
+  },
 
-    error(options, single = true) {
-        this[showMessage]('error', options, single);
-    },
+  error(options, single = true) {
+    this[showMessage]("error", options, single);
+  },
 
-    [showMessage](type, options, single) {
-        if (single) {
-            // 判断是否已存在Message
-            if (!document.getElementsByClassName('el-message').length) {
-              Message[type](options);
-            }
-        } else {
-            Message[type](options);
-        }
+  [showMessage](type, options, single) {
+    if (single) {
+      // 判断是否已存在Message
+      if (!document.getElementsByClassName("el-message").length) {
+        Message[type](options);
+      }
+    } else {
+      Message[type](options);
     }
+  },
 };

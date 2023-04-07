@@ -2,8 +2,8 @@
  * @Description: h5与原生webview交互(待验证)
  * @Author: Dong Wei
  * @Date: 2020-01-15 14:41:14
- * @LastEditors  : Dong Wei
- * @LastEditTime : 2020-01-15 15:15:44
+ * @LastEditors: Dong Wei
+ * @LastEditTime: 2023-04-07 16:35:58
  */
 class CrossPlatform {
     constructor() {
