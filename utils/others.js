@@ -34,10 +34,14 @@ export const loadFont = async ({ fontFamily, fontUrl }, callback) => {
  * @param {number} time 延时时间
  * @return {Promise}
  */
-export const sleep = (callback, time = 500) => {
-  return new Promise((resolve) => {
+export const sleep = (callback, time = 2000) => {
+  return new Promise(resolve => {
     setTimeout(() => {
-      resolve(callback());
+      if (typeof callback === 'function') {
+        resolve(callback());
+      } else {
+        resolve();
+      }
     }, time);
   });
 };
